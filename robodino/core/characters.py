@@ -1,23 +1,27 @@
 class _Character(object):
-    def __init__(self, x, y, grid):
+    def __init__(self, id, x, y, grid):
         """
         assert 0 <= x < grid.width() and 0 <= y < grid.height(), f"({x}, {y}) is out of bounds."
         assert grid.tile(x, y).has() is None, f"Tile ({x}, {y}) is occupied!"
         """
+        self._id = str(id)
         self._x = x
         self._y = y
         self._grid = grid
         self._grid.place(x, y, self)
 
+    def coordinates(self):
+        return [self._x, self._y]
+
 
 class Dinosaur(_Character):
 
-    def __init__(self, x, y, grid, *, health=2):
+    def __init__(self, id, x, y, grid, *, health=2):
         self._health = health
-        super(Dinosaur, self).__init__(x, y, grid)
+        super(Dinosaur, self).__init__(id, x, y, grid)
 
     def __str__(self):
-        return "Dinosaur"
+        return f"Dinosaur.{self._id}"
 
     def hit(self):
         self._health -= 1
@@ -30,12 +34,12 @@ class Dinosaur(_Character):
 
 class Robot(_Character):
 
-    def __init__(self, x, y, grid, *, face):
-        self._facing = face
-        super(Robot, self).__init__(x, y, grid)
+    def __init__(self, id, x, y, grid, *, facing):
+        self._facing = facing
+        super(Robot, self).__init__(id, x, y, grid)
 
     def __str__(self):
-        return f"Robot.{self._facing}"
+        return f"Robot.{self._id}.{self._facing}"
 
     def facing(self):
         return self._facing
@@ -72,4 +76,5 @@ class Robot(_Character):
             if isinstance(self._grid.tile(x, y).has(), Dinosaur):
                 self._grid.tile(x, y).has().hit()
 
-
+    def info(self):
+        return {"id": self._id, "coordinates": [self._x, self._y], "facing": self._facing}

@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from robodino.grid import Grid, Tile
-from robodino.characters import Dinosaur, Robot
+from robodino.core.grid import Grid, Tile
+from robodino.core.characters import Dinosaur, Robot
 
 
 class GridTestCase(unittest.TestCase):
@@ -36,13 +36,13 @@ class CharacterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.grid = Grid(10, 10)
-        self.dino1 = Dinosaur(5, 5, self.grid)
-        self.dino2 = Dinosaur(2, 2, self.grid, health=1)
-        self.dino3 = Dinosaur(3, 3, self.grid)
+        self.dino1 = Dinosaur(0, 5, 5, self.grid)
+        self.dino2 = Dinosaur(1, 2, 2, self.grid, health=1)
+        self.dino3 = Dinosaur(2, 3, 3, self.grid)
 
-        self.robo1 = Robot(3, 2, self.grid, face="D")
-        self.robo2 = Robot(4, 4, self.grid, face="U")
-        self.robo3 = Robot(0, 0, self.grid, face="L")
+        self.robo1 = Robot(0, 3, 2, self.grid, facing="D")
+        self.robo2 = Robot(1, 4, 4, self.grid, facing="U")
+        self.robo3 = Robot(2, 0, 0, self.grid, facing="L")
 
         before_path = os.path.join(os.path.dirname(__file__), "test_files/test.grid.before.txt")
         with open(before_path, 'r') as g:
@@ -53,8 +53,8 @@ class CharacterTestCase(unittest.TestCase):
             self.grid_after = g.read()
 
     def test_characters(self):
-        self.assertEqual(str(self.dino1), "Dinosaur")
-        self.assertEqual(str(self.robo1), "Robot.D")
+        self.assertEqual(str(self.dino1), "Dinosaur.0")
+        self.assertEqual(str(self.robo1), "Robot.0.D")
         self.assertEqual(self.grid.visualize(), self.grid_before)
 
         self.assertIsInstance(self.grid.tile(5, 5).has(), Dinosaur,
@@ -67,6 +67,7 @@ class CharacterTestCase(unittest.TestCase):
         self.assertIsNone(self.grid.tile(2, 2).has())
         self.assertEqual(self.grid.tile(3, 3).has(), self.dino3)
         self.assertEqual(self.dino3.health(), 1)
+        self.assertDictEqual(self.robo1.info(), {"id": "0", "coordinates": [3, 2], "facing": 'R'})
 
         self.robo2.turn("R")
         self.robo2.turn("R")
@@ -76,6 +77,7 @@ class CharacterTestCase(unittest.TestCase):
         self.assertIsNone(self.grid.tile(5, 5).has())
         self.assertEqual(self.robo2.facing(), "D")
         self.assertEqual(self.grid.tile(4, 5).has(), self.robo2)
+        self.assertEqual(self.robo2.coordinates(), [4, 5])
 
         self.robo3.move("F")
         self.assertEqual(self.grid.tile(0, 0).has(), self.robo3)

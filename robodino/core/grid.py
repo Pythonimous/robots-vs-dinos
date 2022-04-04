@@ -68,17 +68,18 @@ class Grid(object):
         rows.append("#" + self._width * "#" + "#")
         visual_dict = {
             "None": ".",
-            "Robot.U": "↑",
-            "Robot.D": "↓",
-            "Robot.L": "←",
-            "Robot.R": "→"
+            "U": "↑",
+            "D": "↓",
+            "L": "←",
+            "R": "→"
         }
         for y in range(self._height):
             row = "#"
             for tile in self._tiles[y].values():
                 at_tile = tile.has()
-                if str(at_tile) in visual_dict:  # if nothing or robot
-                    row += visual_dict[str(at_tile)]
+                visual_id = str(at_tile).split('.')[-1]
+                if visual_id in visual_dict:  # if nothing or robot
+                    row += visual_dict[visual_id]
                 else:  # if dino
                     row += str(at_tile.health())
             row += "#"
