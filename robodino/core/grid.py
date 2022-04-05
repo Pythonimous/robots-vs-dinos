@@ -12,6 +12,12 @@ class Tile(object):
     def __str__(self):
         return f"({self._x}, {self._y}) {str(self._used_by)}"
 
+    def __eq__(self, other):
+        return str(self) == str(other) and self.get_neighbors_short() == other.get_neighbors_short()
+
+    def coordinates(self):
+        return [self._x, self._y]
+
     def populate(self, grid):
         self._left_neighbor = grid.tile(self._x - 1, self._y)
         self._right_neighbor = grid.tile(self._x + 1, self._y)
@@ -28,11 +34,16 @@ class Tile(object):
         return self._used_by
 
     def get_neighbors(self):
-        return {"left": self._left_neighbor,
-                "right": self._right_neighbor,
-                "top": self._top_neighbor,
-                "bottom": self._bottom_neighbor}
+        return {"LEFT": self._left_neighbor,
+                "RIGHT": self._right_neighbor,
+                "UP": self._top_neighbor,
+                "DOWN": self._bottom_neighbor}
 
+    def get_neighbors_short(self):
+        return {"LEFT": str(self._left_neighbor),
+                "RIGHT": str(self._right_neighbor),
+                "UP": str(self._top_neighbor),
+                "DOWN": str(self._bottom_neighbor)}
 
 class Grid(object):
 
@@ -41,6 +52,9 @@ class Grid(object):
         self._height = height
         self._tiles = {}
         self._fill_grid()
+
+    def __eq__(self, other):
+        return (self.width() == other.width()) and (self.height() == other.height()) and (self.tiles() == other.tiles())
 
     def _fill_grid(self):
         """ Fill grid with uninitialized tiles """
@@ -57,6 +71,9 @@ class Grid(object):
     def tile(self, x, y):
         return self._tiles.get(y, {}).get(x, None)
 
+    def tiles(self):
+        return self._tiles
+
     def width(self):
         return self._width
 
@@ -68,10 +85,10 @@ class Grid(object):
         rows.append("#" + self._width * "#" + "#")
         visual_dict = {
             "None": ".",
-            "U": "↑",
-            "D": "↓",
-            "L": "←",
-            "R": "→"
+            "UP": "↑",
+            "DOWN": "↓",
+            "LEFT": "←",
+            "RIGHT": "→"
         }
         for y in range(self._height):
             row = "#"

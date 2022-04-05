@@ -23,6 +23,9 @@ class Dinosaur(_Character):
     def __str__(self):
         return f"Dinosaur.{self._id}"
 
+    def __eq__(self, other):
+        return (self.coordinates() == other.coordinates()) and (self.health() == other.health())
+
     def hit(self):
         self._health -= 1
         if self._health == 0:
@@ -30,6 +33,9 @@ class Dinosaur(_Character):
 
     def health(self):
         return self._health
+
+    def info(self):
+        return {"id": self._id, "coordinates": [self._x, self._y], "health": self.health()}
 
 
 class Robot(_Character):
@@ -41,32 +47,36 @@ class Robot(_Character):
     def __str__(self):
         return f"Robot.{self._id}.{self._facing}"
 
+    def __eq__(self, other):
+        return (self.coordinates() == other.coordinates()) and (self.facing() == other.facing())
+
     def facing(self):
         return self._facing
 
     def turn(self, direction):
         direction_change = {
-            "U": {"L": "L", "R": "R"},
-            "L": {"L": "D", "R": "U"},
-            "D": {"L": "R", "R": "L"},
-            "R": {"L": "U", "R": "D"}
+            "UP": {"LEFT": "LEFT", "RIGHT": "RIGHT"},
+            "LEFT": {"LEFT": "DOWN", "RIGHT": "UP"},
+            "DOWN": {"LEFT": "RIGHT", "RIGHT": "LEFT"},
+            "RIGHT": {"LEFT": "UP", "RIGHT": "DOWN"}
         }
         self._facing = direction_change[self._facing][direction]
 
     def move(self, direction):
-        coordinate_changes = {
-            "U": {"F": (0, -1), "B": (0, 1)},
-            "D": {"F": (0, 1), "B": (0, -1)},
-            "L": {"F": (-1, 0), "B": (1, 0)},
-            "R": {"F": (1, 0), "B": (-1, 0)}
+        which_neighbor = {
+            "UP": {"FORWARD": "UP", "BACKWARD": "DOWN"},
+            "DOWN": {"FORWARD": "DOWN", "BACKWARD": "UP"},
+            "LEFT": {"FORWARD": "LEFT", "BACKWARD": "RIGHT"},
+            "RIGHT": {"FORWARD": "RIGHT", "BACKWARD": "LEFT"}
         }
-        dx, dy = coordinate_changes[self._facing][direction]
-        if not (0 <= self._x + dx < self._grid.width()) or not (0 <= self._y + dy < self._grid.height()):
+        current_tile = self._grid.tile(self._x, self._y)
+        next_neighbor = current_tile.get_neighbors()[which_neighbor[self._facing][direction]]
+        if not next_neighbor:
             return
-        self._grid.place(self._x + dx, self._y + dy, self)
-        self._grid.clear(self._x, self._y)
-        self._x += dx
-        self._y += dy
+        current_tile.clear()
+        next_neighbor.place(self)
+
+        self._x, self._y = next_neighbor.coordinates()
 
     def attack(self):
         for x, y in [(self._x - 1, self._y),

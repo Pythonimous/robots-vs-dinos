@@ -40,9 +40,9 @@ class CharacterTestCase(unittest.TestCase):
         self.dino2 = Dinosaur(1, 2, 2, self.grid, health=1)
         self.dino3 = Dinosaur(2, 3, 3, self.grid)
 
-        self.robo1 = Robot(0, 3, 2, self.grid, facing="D")
-        self.robo2 = Robot(1, 4, 4, self.grid, facing="U")
-        self.robo3 = Robot(2, 0, 0, self.grid, facing="L")
+        self.robo1 = Robot(0, 3, 2, self.grid, facing="DOWN")
+        self.robo2 = Robot(1, 4, 4, self.grid, facing="UP")
+        self.robo3 = Robot(2, 0, 0, self.grid, facing="LEFT")
 
         before_path = os.path.join(os.path.dirname(__file__), "test_files/test.grid.before.txt")
         with open(before_path, 'r') as g:
@@ -54,7 +54,7 @@ class CharacterTestCase(unittest.TestCase):
 
     def test_characters(self):
         self.assertEqual(str(self.dino1), "Dinosaur.0")
-        self.assertEqual(str(self.robo1), "Robot.0.D")
+        self.assertEqual(str(self.robo1), "Robot.0.DOWN")
         self.assertEqual(self.grid.visualize(), self.grid_before)
 
         self.assertIsInstance(self.grid.tile(5, 5).has(), Dinosaur,
@@ -62,24 +62,24 @@ class CharacterTestCase(unittest.TestCase):
         self.assertIsInstance(self.grid.tile(3, 2).has(), Robot,
                               f"Expected Robot, but has {type(self.grid.tile(3,2).has())}")
 
-        self.robo1.turn("L")
+        self.robo1.turn("LEFT")
         self.robo1.attack()
         self.assertIsNone(self.grid.tile(2, 2).has())
         self.assertEqual(self.grid.tile(3, 3).has(), self.dino3)
         self.assertEqual(self.dino3.health(), 1)
-        self.assertDictEqual(self.robo1.info(), {"id": "0", "coordinates": [3, 2], "facing": 'R'})
+        self.assertDictEqual(self.robo1.info(), {"id": "0", "coordinates": [3, 2], "facing": 'RIGHT'})
 
-        self.robo2.turn("R")
-        self.robo2.turn("R")
-        self.robo2.move("F")
+        self.robo2.turn("RIGHT")
+        self.robo2.turn("RIGHT")
+        self.robo2.move("FORWARD")
         self.robo2.attack()
         self.robo2.attack()
         self.assertIsNone(self.grid.tile(5, 5).has())
-        self.assertEqual(self.robo2.facing(), "D")
+        self.assertEqual(self.robo2.facing(), "DOWN")
         self.assertEqual(self.grid.tile(4, 5).has(), self.robo2)
         self.assertEqual(self.robo2.coordinates(), [4, 5])
 
-        self.robo3.move("F")
+        self.robo3.move("FORWARD")
         self.assertEqual(self.grid.tile(0, 0).has(), self.robo3)
 
         self.assertEqual(self.grid.visualize(), self.grid_after)

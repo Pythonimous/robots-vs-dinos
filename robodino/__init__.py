@@ -1,11 +1,12 @@
 from flask import Flask
-from .apis import api
+from .apis.blueprints import blueprint
 
 app = Flask(__name__)
-app.register_blueprint(api, url_prefix='/')
+
+app.register_blueprint(blueprint, url_prefix='/')
 app.config['GRID'] = None
-app.config['DINOSAURS'] = {}
+app.config['DINOS'] = {}
 app.config['ROBOTS'] = {}
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     app.run(debug=True)
