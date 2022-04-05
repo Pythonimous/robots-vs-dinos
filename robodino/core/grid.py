@@ -45,6 +45,7 @@ class Tile(object):
                 "UP": str(self._top_neighbor),
                 "DOWN": str(self._bottom_neighbor)}
 
+
 class Grid(object):
 
     def __init__(self, width=50, height=50):

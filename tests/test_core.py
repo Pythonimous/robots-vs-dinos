@@ -36,7 +36,7 @@ class CharacterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.grid = Grid(10, 10)
-        self.dino1 = Dinosaur(0, 5, 5, self.grid)
+        self.dino1 = Dinosaur(0, 5, 5, self.grid, health=2)
         self.dino2 = Dinosaur(1, 2, 2, self.grid, health=1)
         self.dino3 = Dinosaur(2, 3, 3, self.grid)
 
@@ -71,13 +71,22 @@ class CharacterTestCase(unittest.TestCase):
 
         self.robo2.turn("RIGHT")
         self.robo2.turn("RIGHT")
+        self.assertEqual(self.robo2.facing(), "DOWN")
+
         self.robo2.move("FORWARD")
+        self.assertEqual(self.grid.tile(4, 5).has(), self.robo2)
+        self.assertEqual(self.robo2.coordinates(), [4, 5])
+
+        self.robo2.turn("LEFT")
+        response = self.robo2.move("FORWARD")
+        self.assertEqual(response, "OCCUPIED")
+        self.assertEqual(self.grid.tile(4, 5).has(), self.robo2)
+        self.assertEqual(self.robo2.coordinates(), [4, 5])
+
+        self.robo2.turn("RIGHT")
         self.robo2.attack()
         self.robo2.attack()
         self.assertIsNone(self.grid.tile(5, 5).has())
-        self.assertEqual(self.robo2.facing(), "DOWN")
-        self.assertEqual(self.grid.tile(4, 5).has(), self.robo2)
-        self.assertEqual(self.robo2.coordinates(), [4, 5])
 
         self.robo3.move("FORWARD")
         self.assertEqual(self.grid.tile(0, 0).has(), self.robo3)

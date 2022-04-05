@@ -72,19 +72,24 @@ class Robot(_Character):
         current_tile = self._grid.tile(self._x, self._y)
         next_neighbor = current_tile.get_neighbors()[which_neighbor[self._facing][direction]]
         if not next_neighbor:
-            return
+            return "OUT OF BOUNDS"
+        if next_neighbor.has():
+            return "OCCUPIED"
         current_tile.clear()
         next_neighbor.place(self)
-
         self._x, self._y = next_neighbor.coordinates()
+        return "OK"
 
     def attack(self):
         for x, y in [(self._x - 1, self._y),
                      (self._x + 1, self._y),
                      (self._x, self._y - 1),
                      (self._x, self._y + 1)]:
-            if isinstance(self._grid.tile(x, y).has(), Dinosaur):
-                self._grid.tile(x, y).has().hit()
+            neighbor = self._grid.tile(x, y)
+            if neighbor:
+                occupied_by = neighbor.has()
+                if isinstance(occupied_by, Dinosaur):
+                    occupied_by.hit()
 
     def info(self):
         return {"id": self._id, "coordinates": [self._x, self._y], "facing": self._facing}
