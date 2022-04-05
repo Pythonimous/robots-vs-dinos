@@ -18,6 +18,7 @@ class Dinosaur(_Character):
 
     def __init__(self, id, x, y, grid, *, health=2):
         self._health = health
+        self._max_health = health
         super(Dinosaur, self).__init__(id, x, y, grid)
 
     def __str__(self):
@@ -36,6 +37,10 @@ class Dinosaur(_Character):
 
     def info(self):
         return {"id": self._id, "coordinates": [self._x, self._y], "health": self.health()}
+
+    def healthbar(self):
+        bar_num = round((self._health / self._max_health) * 10)
+        return f"[" + '-' * bar_num + ' ' * (10 - bar_num) + "]" + f" {self._health} / {self._max_health}"
 
 
 class Robot(_Character):

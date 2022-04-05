@@ -30,7 +30,7 @@ robot_out = api.inherit('GetRobot', robot_in, {
 })
 
 dino_in = api.inherit('BuildDino', character, {
-    'health': fields.Integer(required=True, min=1, max=9, default=2, description="Dino's health")
+    'health': fields.Integer(required=True, min=1, default=2, description="Dino's health")
 })
 
 dino_out = api.inherit('GetDino', dino_in, {
@@ -40,6 +40,11 @@ dino_out = api.inherit('GetDino', dino_in, {
 simulation_state = api.model('SimulationState', {
     'robots': fields.List(fields.Nested(robot_out), required=True, description='Robots currently in the simulation'),
     'dinos': fields.List(fields.Nested(dino_out), required=True, description='Dinos currently in the simulation')
+})
+
+dino_healthbar = api.model("Healthbar", {
+    'id': fields.String(required=True, description='Unique dino id'),
+    'healthbar': fields.String(description="Dino healthbar")
 })
 
 
@@ -167,6 +172,32 @@ class GetDino(Resource):
         """ Get a dino given its unique id """
         if dino_id in current_app.config["DINOS"]:
             return current_app.config["DINOS"][dino_id].info()
+        else:
+            abort(404, message='Dino not found.')
+
+
+@api.route('/dinos/health')
+class DinosHealth(Resource):
+    @api.doc('dinos_health')
+    @api.marshal_list_with(dino_healthbar)
+    def get(self):
+        """ Get healthbars for all dinos """
+        healthbars = [{"id": id, "healthbar": dino.healthbar()}
+                      for id, dino in current_app.config["DINOS"].items()]
+        return healthbars
+
+
+@api.route('/dinos/<dino_id>/health')
+@api.param('dino_id', 'The dino identifier')
+@api.response(404, 'Dino not found')
+class DinoHealth(Resource):
+    @api.doc('dino_health')
+    @api.marshal_with(dino_healthbar)
+    def get(self, dino_id):
+        """ Get a healthbar for a dino given its unique id """
+        if dino_id in current_app.config["DINOS"]:
+            return {"id": dino_id,
+                    "healthbar": current_app.config["DINOS"][dino_id].healthbar()}
         else:
             abort(404, message='Dino not found.')
 
