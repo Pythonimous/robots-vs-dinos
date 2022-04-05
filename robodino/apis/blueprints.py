@@ -55,10 +55,19 @@ class SimulationGrid(Resource):
     @api.expect(grid_in, code=201)
     @api.marshal_with(simulation_state)
     def post(self):
+        """ Create grid given its width and height """
         grid_specs = request.get_json()
         width = grid_specs["width"]
         height = grid_specs["height"]
         current_app.config["GRID"] = Grid(width, height)
+        return get_simulation_state()
+
+    @api.doc('current_state')
+    @api.marshal_with(simulation_state)
+    def get(self):
+        """ Get the grid's current state """
+        if current_app.config["GRID"] is None:
+            abort(422, "You must create a simulation space first!")
         return get_simulation_state()
 
 
@@ -75,7 +84,7 @@ class Robots(Resource):
     @api.expect(robot_in, code=201)
     @api.marshal_with(simulation_state)
     def post(self):
-        """ Create a robot given its coordinates and direction it faces """
+        """ Create a robot given its coordinates and the direction it faces """
         grid = current_app.config["GRID"]
         if current_app.config["GRID"] is None:
             abort(422, "You must create a simulation space first!")
@@ -179,6 +188,7 @@ class RobotTurn(Resource):
     @api.expect(robot_turn)
     @api.marshal_with(simulation_state)
     def post(self, robot_id):
+        """ Turn the robot left or right """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
             current_app.config["ROBOTS"][robot_id].turn(robot_order["direction"])
@@ -195,6 +205,7 @@ class RobotMove(Resource):
     @api.expect(robot_move)
     @api.marshal_with(simulation_state)
     def post(self, robot_id):
+        """ Move the robot forward or backward """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
             response = current_app.config["ROBOTS"][robot_id].move(robot_order["direction"])
@@ -215,6 +226,7 @@ class RobotAttack(Resource):
     @api.doc('robot_attack')
     @api.marshal_with(simulation_state)
     def get(self, robot_id):
+        """ Attack all the dinosaurs adjacent to the robot """
         if robot_id in current_app.config["ROBOTS"]:
             current_app.config["ROBOTS"][robot_id].attack()
             dinos_triage = list(current_app.config["DINOS"].keys())
