@@ -1,15 +1,14 @@
 from flask import Flask
-from .apis.blueprints import blueprint
+
+from .apis import blueprint
 
 
 def create_app(name=None):
     app = Flask(name or __name__)
-
-    app.register_blueprint(blueprint, url_prefix='/')
+    app.register_blueprint(blueprint)
     app.config['GRID'] = None
     app.config['DINOS'] = {}
     app.config['ROBOTS'] = {}
-
     return app
 
 

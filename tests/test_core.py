@@ -2,7 +2,7 @@ import os
 import unittest
 
 from robodino.core.grid import Grid, Tile
-from robodino.core.characters import Dinosaur, Robot
+from robodino.core.characters import Dino, Robot
 
 
 class GridTestCase(unittest.TestCase):
@@ -36,9 +36,9 @@ class CharacterTestCase(unittest.TestCase):
 
     def setUp(self):
         self.grid = Grid(10, 10)
-        self.dino1 = Dinosaur(0, 5, 5, self.grid, health=2)
-        self.dino2 = Dinosaur(1, 2, 2, self.grid, health=1)
-        self.dino3 = Dinosaur(2, 3, 3, self.grid)
+        self.dino1 = Dino(0, 5, 5, self.grid, health=2)
+        self.dino2 = Dino(1, 2, 2, self.grid, health=1)
+        self.dino3 = Dino(2, 3, 3, self.grid)
 
         self.robo1 = Robot(0, 3, 2, self.grid, facing="DOWN")
         self.robo2 = Robot(1, 4, 4, self.grid, facing="UP")
@@ -52,16 +52,17 @@ class CharacterTestCase(unittest.TestCase):
         with open(after_path, 'r') as g:
             self.grid_after = g.read()
 
-    def test_characters(self):
-        self.assertEqual(str(self.dino1), "Dinosaur.0")
+    def test_character_statics(self):
+        self.assertEqual(str(self.dino1), "Dino.0")
         self.assertEqual(str(self.robo1), "Robot.0.DOWN")
         self.assertEqual(self.grid.visualize(), self.grid_before)
 
-        self.assertIsInstance(self.grid.tile(5, 5).has(), Dinosaur,
-                              f"Expected Dinosaur, but has {type(self.grid.tile(5, 5).has())}")
+        self.assertIsInstance(self.grid.tile(5, 5).has(), Dino,
+                              f"Expected Dino, but has {type(self.grid.tile(5, 5).has())}")
         self.assertIsInstance(self.grid.tile(3, 2).has(), Robot,
                               f"Expected Robot, but has {type(self.grid.tile(3,2).has())}")
 
+    def test_character_movements(self):
         self.robo1.turn("LEFT")
         self.robo1.attack()
         self.assertIsNone(self.grid.tile(2, 2).has())

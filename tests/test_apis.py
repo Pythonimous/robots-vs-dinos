@@ -61,6 +61,14 @@ def dinos_get(client):
     return client.get('/dinos', follow_redirects=True)
 
 
+def dino_health(client, dino_id):
+    return client.get(f'/dinos/{dino_id}/health', follow_redirects=True)
+
+
+def dinos_health(client):
+    return client.get('/dinos/health', follow_redirects=True)
+
+
 class PrimitivesTestcase(unittest.TestCase):
     """ Tests for the REST API: grid creation and related errors """
 
@@ -89,7 +97,7 @@ class CharactersTestCase(unittest.TestCase):
         robot_create(self.client, [1, 1], "LEFT")
         robot_create(self.client, [9, 9], "UP")
 
-        dino_create(self.client, [2, 2], health=2)
+        dino_create(self.client, [2, 2], health=11)
         dino_create(self.client, [8, 8], health=2)
 
     def test_robot_statics(self):
@@ -126,7 +134,7 @@ class CharactersTestCase(unittest.TestCase):
 
         dinos = dinos_get(self.client)
         self.assertListEqual(dinos.json,
-                             [{"id": "0", "health": 2, "coordinates": [2, 2]},
+                             [{"id": "0", "health": 11, "coordinates": [2, 2]},
                               {"id": "1", "health": 2, "coordinates": [8, 8]}]
                              )
 
@@ -167,7 +175,18 @@ class CharactersTestCase(unittest.TestCase):
                                  {"id": "3", "facing": "DOWN", "coordinates": [7, 4]}
                              ],
                               "dinos": [
-                                  {"id": "0", "health": 1, "coordinates": [2, 2]},
+                                  {"id": "0", "health": 10, "coordinates": [2, 2]},
                                   {"id": "1", "health": 2, "coordinates": [8, 8]}
                               ]})
 
+        response = dino_health(self.client, 2)
+        assert b'Dino not found' in response.data
+
+        self.assertDictEqual(dino_health(self.client, 0).json, {
+            "id": "0", "healthbar": "[--------- ] 10 / 11"
+        })
+
+        self.assertListEqual(dinos_health(self.client).json, [
+            {"id": "0", "healthbar": "[--------- ] 10 / 11"},
+            {"id": "1", "healthbar": "[----------] 2 / 2"}
+        ])

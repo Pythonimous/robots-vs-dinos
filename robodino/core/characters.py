@@ -14,15 +14,15 @@ class _Character(object):
         return [self._x, self._y]
 
 
-class Dinosaur(_Character):
+class Dino(_Character):
 
     def __init__(self, id, x, y, grid, *, health=2):
         self._health = health
         self._max_health = health
-        super(Dinosaur, self).__init__(id, x, y, grid)
+        super(Dino, self).__init__(id, x, y, grid)
 
     def __str__(self):
-        return f"Dinosaur.{self._id}"
+        return f"Dino.{self._id}"
 
     def __eq__(self, other):
         return (self.coordinates() == other.coordinates()) and (self.health() == other.health())
@@ -93,7 +93,7 @@ class Robot(_Character):
             neighbor = self._grid.tile(x, y)
             if neighbor:
                 occupied_by = neighbor.has()
-                if isinstance(occupied_by, Dinosaur):
+                if isinstance(occupied_by, Dino):
                     occupied_by.hit()
 
     def info(self):

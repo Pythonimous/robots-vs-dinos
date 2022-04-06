@@ -110,10 +110,6 @@ class Grid(object):
         return output
 
     def place(self, x, y, something):
-        """
-        assert type(something) in {'Robot', 'Dinosaur'},\
-            f"Expected one of the following: Robot, Dinosaur, got {type(something)} instead"
-        """
         self.tile(x, y).place(something)
 
     def clear(self, x, y):
