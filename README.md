@@ -25,6 +25,33 @@ Install project requirements from [requirements.txt][2]:
 pip3 install -r requirements.txt
 ```
 
+## Run app locally
+
+```bash
+python3 -m flask run --host=0.0.0.0
+```
+
+## Build a Docker image
+
+```bash
+docker build --tag robodino-docker .
+```
+Check that the image built successfully:
+```bash
+docker images
+```
+robodino-docker should be in the list.
+
+## Run the image as a container
+
+```bash
+docker run robodino-docker
+```
+It should serve on a local ip address, i.e.:
+```bash
+ * Running on http://172.17.0.3:5000 (Press CTRL+C to quit)
+```
+
 ## Testing
 In order to confirm that the scripts are functional after the installation, use:
 ```bash
