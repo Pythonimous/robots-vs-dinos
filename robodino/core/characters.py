@@ -1,9 +1,5 @@
 class _Character(object):
     def __init__(self, id, x, y, grid):
-        """
-        assert 0 <= x < grid.width() and 0 <= y < grid.height(), f"({x}, {y}) is out of bounds."
-        assert grid.tile(x, y).has() is None, f"Tile ({x}, {y}) is occupied!"
-        """
         self._id = str(id)
         self._x = x
         self._y = y
@@ -11,6 +7,7 @@ class _Character(object):
         self._grid.place(x, y, self)
 
     def coordinates(self):
+        """ Return the character's coordinates """
         return [self._x, self._y]
 
 
@@ -28,17 +25,21 @@ class Dino(_Character):
         return (self.coordinates() == other.coordinates()) and (self.health() == other.health())
 
     def hit(self):
+        """ Reduce the dino's health by 1 """
         self._health -= 1
         if self._health == 0:
             self._grid.clear(self._x, self._y)
 
     def health(self):
+        """ Return the dino's health """
         return self._health
 
     def info(self):
+        """ Return the dino's id, coordinates, and health """
         return {"id": self._id, "coordinates": [self._x, self._y], "health": self.health()}
 
     def healthbar(self):
+        """ Return the dino's healthbar """
         bar_num = round((self._health / self._max_health) * 10)
         return f"[" + '-' * bar_num + ' ' * (10 - bar_num) + "]" + f" {self._health} / {self._max_health}"
 
@@ -56,9 +57,11 @@ class Robot(_Character):
         return (self.coordinates() == other.coordinates()) and (self.facing() == other.facing())
 
     def facing(self):
+        """ Return which direction the robot is facing """
         return self._facing
 
     def turn(self, direction):
+        """ Turn the robot in a given direction """
         direction_change = {
             "UP": {"LEFT": "LEFT", "RIGHT": "RIGHT"},
             "LEFT": {"LEFT": "DOWN", "RIGHT": "UP"},
@@ -68,6 +71,7 @@ class Robot(_Character):
         self._facing = direction_change[self._facing][direction]
 
     def move(self, direction):
+        """ Move the robot forward or backward """
         which_neighbor = {
             "UP": {"FORWARD": "UP", "BACKWARD": "DOWN"},
             "DOWN": {"FORWARD": "DOWN", "BACKWARD": "UP"},
@@ -86,6 +90,7 @@ class Robot(_Character):
         return "OK"
 
     def attack(self):
+        """ Make the robot attack the adjacent tiles """
         for x, y in [(self._x - 1, self._y),
                      (self._x + 1, self._y),
                      (self._x, self._y - 1),
@@ -97,4 +102,5 @@ class Robot(_Character):
                     occupied_by.hit()
 
     def info(self):
+        """ Return the robot's id, coordinates, and the direction it is curently facing """
         return {"id": self._id, "coordinates": [self._x, self._y], "facing": self._facing}

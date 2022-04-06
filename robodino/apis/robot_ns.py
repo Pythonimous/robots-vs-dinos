@@ -69,7 +69,7 @@ class GetRobot(Resource):
     @robot_ns.doc('get_robot')
     @robot_ns.marshal_with(robot_out)
     def get(self, robot_id):
-        """ Get a robot given its unique id """
+        """ Get the <id> robot info """
         if robot_id in current_app.config["ROBOTS"]:
             return current_app.config["ROBOTS"][robot_id].info()
         else:
@@ -84,7 +84,7 @@ class RobotTurn(Resource):
     @robot_ns.expect(robot_turn)
     @robot_ns.marshal_with(simulation_state)
     def post(self, robot_id):
-        """ Turn the robot left or right """
+        """ Turn the <id> robot left or right """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
             current_app.config["ROBOTS"][robot_id].turn(robot_order["direction"])
@@ -101,7 +101,7 @@ class RobotMove(Resource):
     @robot_ns.expect(robot_move)
     @robot_ns.marshal_with(simulation_state)
     def post(self, robot_id):
-        """ Move the robot forward or backward """
+        """ Move the <id> robot forward or backward """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
             response = current_app.config["ROBOTS"][robot_id].move(robot_order["direction"])
@@ -122,7 +122,7 @@ class RobotAttack(Resource):
     @robot_ns.doc('robot_attack')
     @robot_ns.marshal_with(simulation_state)
     def get(self, robot_id):
-        """ Attack all the dinos adjacent to the robot """
+        """ Attack all the dinos adjacent to the <id> robot """
         if robot_id in current_app.config["ROBOTS"]:
             current_app.config["ROBOTS"][robot_id].attack()
             dinos_triage = list(current_app.config["DINOS"].keys())

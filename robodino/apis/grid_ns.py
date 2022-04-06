@@ -35,6 +35,7 @@ simulation_state = grid_ns.model('SimulationState', {
 
 
 def get_simulation_state():
+    """ Get info of all existing robots and dinos """
     robots_info = [robot.info() for robot in current_app.config["ROBOTS"].values()]
     dinos_info = [dino.info() for dino in current_app.config["DINOS"].values()]
     return {"robots": robots_info, 'dinos': dinos_info}
@@ -46,7 +47,7 @@ class SimulationGrid(Resource):
     @grid_ns.expect(grid_in, code=201)
     @grid_ns.marshal_with(simulation_state)
     def post(self):
-        """ Create grid given its width and height """
+        """ Create a grid given its width and height """
         grid_specs = request.get_json()
         width = grid_specs["width"]
         height = grid_specs["height"]

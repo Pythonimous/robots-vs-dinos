@@ -67,7 +67,7 @@ class GetDino(Resource):
     @dino_ns.doc('get_dino')
     @dino_ns.marshal_with(dino_out)
     def get(self, dino_id):
-        """ Get a dino given its unique id """
+        """ Get the <id> dino info """
         if dino_id in current_app.config["DINOS"]:
             return current_app.config["DINOS"][dino_id].info()
         else:
@@ -92,7 +92,7 @@ class DinoHealth(Resource):
     @dino_ns.doc('dino_health')
     @dino_ns.marshal_with(dino_healthbar)
     def get(self, dino_id):
-        """ Get a healthbar for a dino given its unique id """
+        """ Get a healthbar for the <id> dino """
         if dino_id in current_app.config["DINOS"]:
             return {"id": dino_id,
                     "healthbar": current_app.config["DINOS"][dino_id].healthbar()}
