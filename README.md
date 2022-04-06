@@ -34,7 +34,7 @@ You can additionally check detailed test coverage using the [**coverage**](https
 ```bash
 pip3 install coverage
 ```
-Before generating the report, you need to run the tests using coverage. Current coverage is **100%**:
+Before generating the report, you need to run the tests with **coverage**. Current test coverage is **100%**:
 ```bash
 coverage run -m unittest
 ```
