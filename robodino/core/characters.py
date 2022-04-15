@@ -22,7 +22,8 @@ class Dino(_Character):
         return f"Dino.{self._id}"
 
     def __eq__(self, other):
-        return (self.coordinates() == other.coordinates()) and (self.health() == other.health())
+        return (self.coordinates() == other.coordinates())\
+               and (self.health() == other.health())
 
     def hit(self):
         """ Reduce the dino's health by 1 """
@@ -36,12 +37,15 @@ class Dino(_Character):
 
     def info(self):
         """ Return the dino's id, coordinates, and health """
-        return {"id": self._id, "coordinates": [self._x, self._y], "health": self.health()}
+        return {"id": self._id,
+                "coordinates": [self._x, self._y],
+                "health": self.health()}
 
     def healthbar(self):
         """ Return the dino's healthbar """
         bar_num = round((self._health / self._max_health) * 10)
-        return f"[" + '-' * bar_num + ' ' * (10 - bar_num) + "]" + f" {self._health} / {self._max_health}"
+        return "[" + '-' * bar_num + ' ' * (10 - bar_num) + "]" +\
+               f" {self._health} / {self._max_health}"
 
 
 class Robot(_Character):
@@ -54,7 +58,8 @@ class Robot(_Character):
         return f"Robot.{self._id}.{self._facing}"
 
     def __eq__(self, other):
-        return (self.coordinates() == other.coordinates()) and (self.facing() == other.facing())
+        return (self.coordinates() == other.coordinates()) \
+               and (self.facing() == other.facing())
 
     def facing(self):
         """ Return which direction the robot is facing """
@@ -72,21 +77,22 @@ class Robot(_Character):
 
     def move(self, direction):
         """ Move the robot forward or backward """
-        which_neighbor = {
+        where_to_go = {
             "UP": {"FORWARD": "UP", "BACKWARD": "DOWN"},
             "DOWN": {"FORWARD": "DOWN", "BACKWARD": "UP"},
             "LEFT": {"FORWARD": "LEFT", "BACKWARD": "RIGHT"},
             "RIGHT": {"FORWARD": "RIGHT", "BACKWARD": "LEFT"}
         }
         current_tile = self._grid.tile(self._x, self._y)
-        next_neighbor = current_tile.get_neighbors()[which_neighbor[self._facing][direction]]
-        if not next_neighbor:
+        adjacent_tiles = current_tile.get_neighbors()
+        next_tile = adjacent_tiles[where_to_go[self._facing][direction]]
+        if not next_tile:
             return "OUT OF BOUNDS"
-        if next_neighbor.has():
+        if next_tile.has():
             return "OCCUPIED"
         current_tile.clear()
-        next_neighbor.place(self)
-        self._x, self._y = next_neighbor.coordinates()
+        next_tile.place(self)
+        self._x, self._y = next_tile.coordinates()
         return "OK"
 
     def attack(self):
@@ -102,5 +108,8 @@ class Robot(_Character):
                     occupied_by.hit()
 
     def info(self):
-        """ Return the robot's id, coordinates, and the direction it is curently facing """
-        return {"id": self._id, "coordinates": [self._x, self._y], "facing": self._facing}
+        """ Return the robot's id, coordinates,
+        and the direction it is curently facing """
+        return {"id": self._id,
+                "coordinates": [self._x, self._y],
+                "facing": self._facing}

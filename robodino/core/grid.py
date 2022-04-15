@@ -13,7 +13,8 @@ class Tile(object):
         return f"({self._x}, {self._y}) {str(self._used_by)}"
 
     def __eq__(self, other):
-        return str(self) == str(other) and self.get_neighbors_short() == other.get_neighbors_short()
+        return str(self) == str(other)\
+               and self.get_neighbors_short() == other.get_neighbors_short()
 
     def coordinates(self):
         """ Return the coordinates of the tile """
@@ -62,7 +63,9 @@ class Grid(object):
         self._fill_grid()
 
     def __eq__(self, other):
-        return (self.width() == other.width()) and (self.height() == other.height()) and (self.tiles() == other.tiles())
+        return (self.width() == other.width())\
+               and (self.height() == other.height())\
+               and (self.tiles() == other.tiles())
 
     def _fill_grid(self):
         """ Fill grid with uninitialized tiles """

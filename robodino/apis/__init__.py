@@ -7,7 +7,8 @@ from .robot_ns import robot_ns
 from .dino_ns import dino_ns
 
 blueprint = Blueprint('SimulationBlueprint', __name__)
-api = Api(blueprint, title='Robots vs Dinos', description='Robots vs Dinos Endpoints')
+api = Api(blueprint, title='Robots vs Dinos',
+          description='Robots vs Dinos Endpoints')
 
 api.add_namespace(grid_ns, path='/grid')
 api.add_namespace(robot_ns, path='/robots')

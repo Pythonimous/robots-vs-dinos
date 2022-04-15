@@ -111,13 +111,16 @@ class CharactersTestCase(unittest.TestCase):
         assert b'Robot not found' in response.data
 
         robot1 = robot_get(self.client, 1).json
-        self.assertDictEqual(robot1, {"id": "1", "facing": "UP", "coordinates": [9, 9]})
+        self.assertDictEqual(
+            robot1, {"id": "1", "facing": "UP", "coordinates": [9, 9]})
 
         robots = robots_get(self.client)
-        self.assertListEqual(robots.json,
-                             [{"id": "0", "facing": "LEFT", "coordinates": [1, 1]},
-                              {"id": "1", "facing": "UP", "coordinates": [9, 9]}]
-                             )
+        self.assertListEqual(
+            robots.json, [
+                {"id": "0", "facing": "LEFT", "coordinates": [1, 1]},
+                {"id": "1", "facing": "UP", "coordinates": [9, 9]}
+            ]
+        )
 
     def test_dino_statics(self):
         response = dino_create(self.client, [10, 10], 2)
@@ -130,13 +133,17 @@ class CharactersTestCase(unittest.TestCase):
         assert b'Dino not found' in response.data
 
         dino1 = dino_get(self.client, 1).json
-        self.assertDictEqual(dino1, {"id": "1", "health": 2, "coordinates": [8, 8]})
+        self.assertDictEqual(
+            dino1, {"id": "1", "health": 2, "coordinates": [8, 8]}
+        )
 
         dinos = dinos_get(self.client)
-        self.assertListEqual(dinos.json,
-                             [{"id": "0", "health": 11, "coordinates": [2, 2]},
-                              {"id": "1", "health": 2, "coordinates": [8, 8]}]
-                             )
+        self.assertListEqual(
+            dinos.json,
+            [
+                {"id": "0", "health": 11, "coordinates": [2, 2]},
+                {"id": "1", "health": 2, "coordinates": [8, 8]}
+            ])
 
     def test_movements(self):
         robot_move(self.client, 0, "FORWARD")
@@ -167,17 +174,18 @@ class CharactersTestCase(unittest.TestCase):
         response = robot_turn(self.client, 5, "LEFT")
         assert b'Robot not found' in response.data
 
-        self.assertDictEqual(grid_get(self.client).json,
-                             {"robots": [
-                                 {"id": "0", "facing": "DOWN", "coordinates": [1, 2]},
-                                 {"id": "1", "facing": "UP", "coordinates": [9, 9]},
-                                 {"id": "2", "facing": "LEFT", "coordinates": [6, 4]},
-                                 {"id": "3", "facing": "DOWN", "coordinates": [7, 4]}
-                             ],
-                              "dinos": [
-                                  {"id": "0", "health": 10, "coordinates": [2, 2]},
-                                  {"id": "1", "health": 2, "coordinates": [8, 8]}
-                              ]})
+        self.assertDictEqual(
+            grid_get(self.client).json,
+            {"robots": [
+                {"id": "0", "facing": "DOWN", "coordinates": [1, 2]},
+                {"id": "1", "facing": "UP", "coordinates": [9, 9]},
+                {"id": "2", "facing": "LEFT", "coordinates": [6, 4]},
+                {"id": "3", "facing": "DOWN", "coordinates": [7, 4]}
+            ],
+                "dinos": [
+                    {"id": "0", "health": 10, "coordinates": [2, 2]},
+                    {"id": "1", "health": 2, "coordinates": [8, 8]}
+                ]})
 
         response = dino_health(self.client, 2)
         assert b'Dino not found' in response.data

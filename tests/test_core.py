@@ -10,14 +10,16 @@ class GridTestCase(unittest.TestCase):
 
     def setUp(self):
         self.grid = Grid(10, 10)
-        empty_path = os.path.join(os.path.dirname(__file__), "test_files/test.grid.empty.txt")
+        empty_path = os.path.join(os.path.dirname(__file__),
+                                  "test_files/test.grid.empty.txt")
         with open(empty_path, 'r') as g:
             self.grid_empty = g.read()
 
         self.tile_00 = self.grid.tile(0, 0)
         self.tile_42 = self.grid.tile(4, 2)
 
-        self.tile_00_neighbors = [None, self.grid.tile(1, 0), None, self.grid.tile(0, 1)]
+        self.tile_00_neighbors = [None, self.grid.tile(1, 0),
+                                  None, self.grid.tile(0, 1)]
         self.tile_42_neighbors = [self.grid.tile(3, 2), self.grid.tile(5, 2),
                                   self.grid.tile(4, 1), self.grid.tile(4, 3)]
 
@@ -27,8 +29,10 @@ class GridTestCase(unittest.TestCase):
         self.assertEqual(self.grid.visualize(), self.grid_empty)
         self.assertIsInstance(self.grid.tile(0, 0), Tile)
         self.assertEqual(str(self.tile_00), "(0, 0) None")
-        self.assertListEqual(list(self.tile_00.get_neighbors().values()), self.tile_00_neighbors)
-        self.assertListEqual(list(self.tile_42.get_neighbors().values()), self.tile_42_neighbors)
+        self.assertListEqual(list(self.tile_00.get_neighbors().values()),
+                             self.tile_00_neighbors)
+        self.assertListEqual(list(self.tile_42.get_neighbors().values()),
+                             self.tile_42_neighbors)
 
 
 class CharacterTestCase(unittest.TestCase):
@@ -44,11 +48,13 @@ class CharacterTestCase(unittest.TestCase):
         self.robo2 = Robot(1, 4, 4, self.grid, facing="UP")
         self.robo3 = Robot(2, 0, 0, self.grid, facing="LEFT")
 
-        before_path = os.path.join(os.path.dirname(__file__), "test_files/test.grid.before.txt")
+        before_path = os.path.join(os.path.dirname(__file__),
+                                   "test_files/test.grid.before.txt")
         with open(before_path, 'r') as g:
             self.grid_before = g.read()
 
-        after_path = os.path.join(os.path.dirname(__file__), "test_files/test.grid.after.txt")
+        after_path = os.path.join(os.path.dirname(__file__),
+                                  "test_files/test.grid.after.txt")
         with open(after_path, 'r') as g:
             self.grid_after = g.read()
 
@@ -58,9 +64,11 @@ class CharacterTestCase(unittest.TestCase):
         self.assertEqual(self.grid.visualize(), self.grid_before)
 
         self.assertIsInstance(self.grid.tile(5, 5).has(), Dino,
-                              f"Expected Dino, but has {type(self.grid.tile(5, 5).has())}")
+                              f"Expected Dino, but has "
+                              f"{type(self.grid.tile(5, 5).has())}")
         self.assertIsInstance(self.grid.tile(3, 2).has(), Robot,
-                              f"Expected Robot, but has {type(self.grid.tile(3,2).has())}")
+                              f"Expected Robot, but has "
+                              f"{type(self.grid.tile(3, 2).has())}")
 
     def test_character_movements(self):
         self.robo1.turn("LEFT")
@@ -68,7 +76,9 @@ class CharacterTestCase(unittest.TestCase):
         self.assertIsNone(self.grid.tile(2, 2).has())
         self.assertEqual(self.grid.tile(3, 3).has(), self.dino3)
         self.assertEqual(self.dino3.health(), 1)
-        self.assertDictEqual(self.robo1.info(), {"id": "0", "coordinates": [3, 2], "facing": 'RIGHT'})
+        self.assertDictEqual(self.robo1.info(), {"id": "0",
+                                                 "coordinates": [3, 2],
+                                                 "facing": 'RIGHT'})
 
         self.robo2.turn("RIGHT")
         self.robo2.turn("RIGHT")

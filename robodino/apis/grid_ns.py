@@ -7,37 +7,47 @@ from robodino.core.grid import Grid
 grid_ns = Namespace('Grid', description='Grid related endpoints')
 
 grid_in = grid_ns.model('MakeGrid', {
-    'width': fields.Integer(required=True, min=1, default=50, description='Grid width'),
-    'height': fields.Integer(required=True, min=1, default=50, description='Grid height')
+    'width': fields.Integer(required=True, min=1, default=50,
+                            description='Grid width'),
+    'height': fields.Integer(required=True, min=1, default=50,
+                             description='Grid height')
 })
 
 
 robot_ns = Namespace('Robot', description='Robot related endpoints')
 robot_out = robot_ns.model('GetRobot', {
-    'coordinates': fields.List(fields.Integer, required=True, min_items=2, max_items=2,
+    'coordinates': fields.List(fields.Integer, required=True,
+                               min_items=2, max_items=2,
                                description='X, Y coordinates'),
-    'facing': fields.String(required=True, pattern='(LEFT|RIGHT|UP|DOWN)', description='Direction the robot is facing'),
+    'facing': fields.String(required=True, pattern='(LEFT|RIGHT|UP|DOWN)',
+                            description='Direction the robot is facing'),
     'id': fields.String(required=True, description='Unique robot id')
 })
 
 dino_ns = Namespace('Dino', description='Dino related endpoints')
 dino_out = dino_ns.model('GetDino', {
-    'coordinates': fields.List(fields.Integer, required=True, min_items=2, max_items=2,
+    'coordinates': fields.List(fields.Integer, required=True,
+                               min_items=2, max_items=2,
                                description='X, Y coordinates'),
-    'health': fields.Integer(required=True, min=1, default=2, description="Dino's health"),
+    'health': fields.Integer(required=True, min=1, default=2,
+                             description="Dino's health"),
     'id': fields.String(required=True, description='Unique dino id')
 })
 
 simulation_state = grid_ns.model('SimulationState', {
-    'robots': fields.List(fields.Nested(robot_out), required=True, description='Robots currently in the simulation'),
-    'dinos': fields.List(fields.Nested(dino_out), required=True, description='Dinos currently in the simulation')
+    'robots': fields.List(fields.Nested(robot_out), required=True,
+                          description='Robots currently in the simulation'),
+    'dinos': fields.List(fields.Nested(dino_out), required=True,
+                         description='Dinos currently in the simulation')
 })
 
 
 def get_simulation_state():
     """ Get info of all existing robots and dinos """
-    robots_info = [robot.info() for robot in current_app.config["ROBOTS"].values()]
-    dinos_info = [dino.info() for dino in current_app.config["DINOS"].values()]
+    robots_info = [robot.info()
+                   for robot in current_app.config["ROBOTS"].values()]
+    dinos_info = [dino.info()
+                  for dino in current_app.config["DINOS"].values()]
     return {"robots": robots_info, 'dinos': dinos_info}
 
 

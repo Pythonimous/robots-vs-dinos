@@ -8,9 +8,11 @@ from robodino.core.characters import Robot
 robot_ns = Namespace('Robot', description='Robot related endpoints')
 
 robot_in = robot_ns.model('BuildRobot', {
-    'coordinates': fields.List(fields.Integer, required=True, min_items=2, max_items=2,
+    'coordinates': fields.List(fields.Integer, required=True,
+                               min_items=2, max_items=2,
                                description='X, Y coordinates'),
-    'facing': fields.String(required=True, pattern='(LEFT|RIGHT|UP|DOWN)', description='Direction the robot is facing')
+    'facing': fields.String(required=True, pattern='(LEFT|RIGHT|UP|DOWN)',
+                            description='Direction the robot is facing')
 })
 
 robot_out = robot_ns.inherit('GetRobot', robot_in, {
@@ -18,11 +20,13 @@ robot_out = robot_ns.inherit('GetRobot', robot_in, {
 })
 
 robot_turn = robot_ns.model('RobotTurn', {
-    'direction': fields.String(required=True, pattern='(LEFT|RIGHT)', description='Direction to turn the robot')
+    'direction': fields.String(required=True, pattern='(LEFT|RIGHT)',
+                               description='Direction to turn the robot')
 })
 
 robot_move = robot_ns.model('RobotMove', {
-    'direction': fields.String(required=True, pattern='(FORWARD|BACKWARD)', description='Direction to move the robot')
+    'direction': fields.String(required=True, pattern='(FORWARD|BACKWARD)',
+                               description='Direction to move the robot')
 })
 
 
@@ -32,7 +36,8 @@ class Robots(Resource):
     @robot_ns.marshal_list_with(robot_out)
     def get(self):
         """ Get a list of currently existing robots """
-        robots_info = [robot.info() for robot in current_app.config["ROBOTS"].values()]
+        robots_info = [robot.info()
+                       for robot in current_app.config["ROBOTS"].values()]
         return robots_info
 
     @robot_ns.doc('create_robot')
@@ -51,12 +56,14 @@ class Robots(Resource):
 
         if not 0 <= x < width or not 0 <= y < height:
             abort(416, f"Tried to create a robot out of bounds. "
-                       f"X should be in [0; {width-1}]. Y should be in [0; {height-1}].")
+                       f"X should be in [0; {width-1}]. "
+                       f"Y should be in [0; {height-1}].")
         if grid.tile(x, y).has():
             abort(409, 'Tile not empty.')
 
         facing = robot_specs['facing']
-        robot = Robot(robot_id, x, y, current_app.config['GRID'], facing=facing)
+        robot = Robot(robot_id, x, y, current_app.config['GRID'],
+                      facing=facing)
         current_app.config['ROBOTS'][robot_id] = robot
 
         return get_simulation_state()
@@ -87,7 +94,9 @@ class RobotTurn(Resource):
         """ Turn the <id> robot left or right """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
-            current_app.config["ROBOTS"][robot_id].turn(robot_order["direction"])
+            current_app.config["ROBOTS"][robot_id].turn(
+                robot_order["direction"]
+            )
             return get_simulation_state()
         else:
             abort(404, message='Robot not found.')
@@ -104,7 +113,9 @@ class RobotMove(Resource):
         """ Move the <id> robot forward or backward """
         robot_order = request.get_json()
         if robot_id in current_app.config["ROBOTS"]:
-            response = current_app.config["ROBOTS"][robot_id].move(robot_order["direction"])
+            response = current_app.config["ROBOTS"][robot_id].move(
+                robot_order["direction"]
+            )
             if response == "OUT OF BOUNDS":
                 abort(416, "Tried to move robot out of bounds.")
             elif response == "OCCUPIED":
